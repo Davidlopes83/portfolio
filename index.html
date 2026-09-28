@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PortefólioTrack PRO</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.1/chart.umd.min.js"></script>
+<style id="tv">:root{--bg:#0f1117;--bg2:#161923;--card:#1a1e2b;--card2:#202534;--border:#2a3042;--text:#e6e9f0;--muted:#8b93a7;--accent:#4f8cff;--green:#22c55e;--red:#ef4444;--gold:#f59e0b}</style>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.45;padding-bottom:40px}
+header{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;position:sticky;top:0;z-index:50}
+.logo{font-weight:700;font-size:17px}.logo span{color:var(--accent)}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav button{background:none;border:none;color:var(--muted);font-size:14px;padding:8px 12px;cursor:pointer;border-radius:8px;font-weight:600}
+nav button.on{background:var(--card2);color:var(--text)}
+.actions{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap;align-items:center}
+.wrap{max-width:1250px;margin:0 auto;padding:20px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:18px}
+.card h2{font-size:14px;margin-bottom:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.big-net{font-size:34px;font-weight:800}
+.big-sub{font-size:13px;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:1.7fr 1fr;gap:18px}
+@media(max-width:950px){.grid2{grid-template-columns:1fr}}
+input,select,button{font-family:inherit;font-size:13px;color:var(--text);background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 11px;outline:none}
+.btn{background:var(--accent);border:none;color:#fff;cursor:pointer;font-weight:600;padding:8px 13px;border-radius:8px}
+.btn:hover{opacity:.85}.btn.ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn.gold{background:var(--gold);color:#000}.btn.danger{background:var(--red)}
+.btn.sm{padding:4px 8px;font-size:11px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;color:var(--muted);font-size:10px;text-transform:uppercase;padding:6px 8px;border-bottom:1px solid var(--border)}
+td{padding:9px 8px;border-bottom:1px solid var(--border)}
+.right{text-align:right}.pos{color:var(--green)}.neg{color:var(--red)}
+.pos-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border)}
+.pos-row:last-child{border-bottom:none}
+.pf-logo{width:38px;height:38px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;overflow:hidden;flex-shrink:0;border:1px solid var(--border)}
+.pf-logo img{width:100%;height:100%;object-fit:cover}
+.pf-name{font-weight:600;font-size:14px}
+.pf-tick{font-size:11px;color:var(--muted)}
+.pf-mid{margin-left:auto;text-align:right}
+.pf-avg{font-size:12px;color:var(--muted)}
+.pf-cur{font-size:14px;font-weight:600}
+.pf-pl{text-align:right;min-width:90px}
+.pf-plv{font-size:14px;font-weight:700}
+.pf-plp{font-size:11px}
+.empty{text-align:center;color:var(--muted);padding:26px 0;font-size:13px}
+.kv{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.kv:last-child{border-bottom:none}
+.kv .k{color:var(--muted)}
+.feed-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.feed-row:last-child{border-bottom:none}
+.feed-date{font-size:11px;color:var(--muted);min-width:52px}
+.feed-val{margin-left:auto;font-weight:600;white-space:nowrap}
+.acct{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.acct:last-child{border-bottom:none}
+.acct .val{margin-left:auto;text-align:right}
+.tag{padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700}
+.tag.green{background:#142b22;color:var(--green)}.tag.gold{background:#2b2514;color:var(--gold)}
+.drop-zone{border:2px dashed var(--border);border-radius:10px;padding:20px;text-align:center;color:var(--muted);cursor:pointer;font-size:13px}
+.drop-zone:hover,.drop-zone.over{border-color:var(--accent)}
+.form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:8px;margin-bottom:10px}
+label{display:block;font-size:11px;color:var(--muted);margin-bottom:3px}
+.wallet-card{background:var(--card2);border-radius:10px;padding:12px;margin-bottom:10px;border:1px solid var(--border);font-size:12px}
+.chain{font-size:10px;padding:2px 7px;border-radius:5px;font-weight:700;background:var(--bg)}
+.chain.btc{color:#f2a900}.chain.sol{color:#a855f7}.chain.eth{color:#8ab4ff}.chain.bsc{color:#f0b90b}.chain.base{color:#5b8cff}
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--card2);border:1px solid var(--border);padding:11px 18px;border-radius:8px;font-size:13px;opacity:0;transition:opacity .25s;z-index:100;pointer-events:none;max-width:92vw}
+#toast.show{opacity:1}
+.hidden{display:none!important}
+.small{font-size:11px}.muted{color:var(--muted)}
+.addr{font-family:ui-monospace,monospace;font-size:10px;word-break:break-all}
+.tab{display:none}.tab.on{display:block}
+.status{font-size:11px;padding:3px 10px;border-radius:20px}
+.status.ok{background:#142b22;color:var(--green)}.status.warn{background:#2b2514;color:var(--gold)}
+.progress{height:10px;border-radius:6px;background:var(--bg2);overflow:hidden;border:1px solid var(--border)}
+.progress>div{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));transition:width .4s}
+.rc-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.rc-logo{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#f59e0b,#ef4444);display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden;flex-shrink:0}
+.rc-logo img{width:100%;height:100%;object-fit:cover;border-radius:12px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Portefólio<span>Track</span></div>
+  <nav>
+    <button id="nb-dash" class="on" onclick="showTab('dash')">Dashboard</button>
+    <button id="nb-feed" onclick="showTab('feed')">Transações</button>
+    <button id="nb-net" onclick="showTab('net')">Património</button>
+    <button id="nb-rc" onclick="showTab('rc')">🎮 RollerCoin</button>
+  </nav>
+  <div class="actions">
+    <button class="btn ghost sm" onclick="document.getElementById('csvFile').click()">Importar T212</button>
+    <input type="file" id="csvFile" class="hidden" accept=".csv" onchange="handleCsv(this.files[0]);this.value=''">
+    <button class="btn ghost sm" onclick="exportBackup()">Backup</button>
+    <button class="btn ghost sm" onclick="document.getElementById('restoreFile').click()">Restaurar</button>
+    <input type="file" id="restoreFile" class="hidden" accept=".json" onchange="importBackup(this.files[0])">
+    <select id="themeSel" onchange="setTheme(this.value)" style="padding:5px 8px;font-size:12px">
+      <option value="panda">Panda</option><option value="midnight">Midnight</option>
+      <option value="forest">Forest</option><option value="ember">Ember</option>
+      <option value="ocean">Ocean</option><option value="dracula">Dracula</option>
+      <option value="tokyo">Tokyo Night</option><option value="nord">Nord</option>
+      <option value="light">Light</option><option value="sand">Sand</option>
+      <option value="mint">Mint</option><option value="synthwave">Synthwave</option>
+      <option value="terminal">Terminal</option><option value="gruvbox">Gruvbox</option>
+    </select>
+    <button class="btn sm" onclick="refreshPrices()">↻ Atualizar</button>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- ============ DASHBOARD ============ -->
+<div class="tab on" id="tab-dash">
+  <div class="card" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px">
+    <div>
+      <div class="big-sub">Património líquido</div>
+      <div class="big-net" id="dNet">—</div>
+      <div class="big-sub" id="dNetSub">—</div>
+    </div>
+    <div class="small muted" id="dFx">—</div>
+  </div>
+  <div class="grid2">
+    <div>
+      <div class="card">
+        <h2>Posições <span id="pStatus" class="status warn" style="margin-left:auto;text-transform:none">sem preços</span></h2>
+        <div id="posList"><div class="empty">Sem posições. Importa o CSV da Trading 212.</div></div>
+        <div id="posMore" class="small muted" style="text-align:center;padding-top:10px;cursor:pointer" onclick="toggleAllPos()">Mostrar mais</div>
+      </div>
+      <div class="card">
+        <h2>Dividendos</h2>
+        <div class="grid2" style="grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+          <div class="kv" style="border:none"><span class="k">Total recebido</span><b id="divTotal">—</b></div>
+          <div class="kv" style="border:none"><span class="k">YoC (12m est.)</span><b id="divYoc">—</b></div>
+        </div>
+        <canvas id="divChart" height="130"></canvas>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <h2>Capital</h2>
+        <div class="kv"><span class="k">Capital investido</span><b id="capInv">—</b></div>
+        <div class="kv"><span class="k">Ganho de preço</span><b id="capPrice">—</b></div>
+        <div class="kv"><span class="k">Dividendos</span><b id="capDiv">—</b></div>
+        <div class="kv"><span class="k">Ganho realizado</span><b id="capReal">—</b></div>
+        <div class="kv"><span class="k">Custos de transação</span><b id="capFees">—</b></div>
+        <div class="kv" style="margin-top:6px"><span class="k"><b>Retorno total</b></span><b id="capTot">—</b></div>
+      </div>
+      <div class="card">
+        <h2>Alocação</h2>
+        <canvas id="allocChart" height="190"></canvas>
+        <div id="allocLegend" class="small muted" style="margin-top:10px"></div>
+      </div>
+      <div class="card">
+        <h2>🤝 8lends <span class="tag gold">USDC</span></h2>
+        <div class="form-row">
+          <div><label>Capital USDC</label><input id="lAmt" type="number" step="any" placeholder="min 100"></div>
+          <div><label>APR %</label><input id="lApr" type="number" step="any" placeholder="19-25"></div>
+          <div><label>Meses</label><input id="lTerm" type="number" placeholder="4-16"></div>
+          <div><label>Início</label><input id="lDate" type="date"></div>
+          <button class="btn gold sm" onclick="addLend()" style="align-self:end">Registar</button>
+        </div>
+        <div id="lendList"></div>
+        <div class="kv" style="margin-top:8px"><span class="k">Juros estimados/mês</span><b class="pos" id="lendMon">—</b></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ FEED ============ -->
+<div class="tab" id="tab-feed">
+  <div class="card">
+    <h2>Transações</h2>
+    <div id="feedList"><div class="empty">Sem transações.</div></div>
+  </div>
+</div>
+
+<!-- ============ PATRIMÓNIO ============ -->
+<div class="tab" id="tab-net">
+  <div class="grid2">
+    <div>
+      <div class="card"><h2>Contas</h2><div id="acctList"></div></div>
+      <div class="card">
+        <h2>Saldo de caixa (T212)</h2>
+        <div class="kv"><span class="k">Depósitos</span><b id="cashDep" class="pos">—</b></div>
+        <div class="kv"><span class="k">Juros de cash</span><b id="cashInt" class="pos">—</b></div>
+        <div class="kv"><span class="k">Levantamentos</span><b id="cashWit" class="neg">—</b></div>
+        <div class="kv"><span class="k"><b>Caixa estimado livre</b></span><b id="cashFree">—</b></div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <h2>🔗 Carteiras Cripto</h2>
+        <div class="form-row">
+          <select id="wChain"><option value="btc">Bitcoin</option><option value="sol">Solana</option><option value="eth">Ethereum</option><option value="bsc">BSC</option><option value="base">Base (8lends)</option></select>
+          <input id="wAddr" placeholder="Endereço" style="grid-column:span 2">
+        </div>
+        <div class="form-row"><input id="wKey" placeholder="Chave Etherscan (ETH/BSC/Base · etherscan.io → API Keys)" style="grid-column:span 3"></div>
+        <button class="btn" style="width:100%" onclick="addWallet()">Vincular & consultar</button>
+        <div id="walletList" style="margin-top:12px"></div>
+      </div>
+      <div class="card">
+        <h2>Importar CSV (drop)</h2>
+        <div class="drop-zone" id="dz">Arrasta o CSV da Trading 212 aqui</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ROLLERCOIN ============ -->
+<div class="tab" id="tab-rc">
+  <div class="card">
+    <div class="rc-head">
+      <div class="rc-logo"><img src="https://rollercoin.com/static/img/logo.png" onerror="this.remove();this.parentNode.textContent='🎮'" alt=""></div>
+      <div>
+        <div style="font-size:18px;font-weight:700">RollerCoin</div>
+        <div class="small muted">Depósitos, levantamentos, mineração e ROI das mineradoras</div>
+      </div>
+      <div style="margin-left:auto" class="actions">
+        <button class="btn ghost sm" onclick="document.getElementById('rcFile').click()">Importar CSV RollerCoin</button>
+        <input type="file" id="rcFile" class="hidden" accept=".csv" onchange="handleRcCsv(this.files[0]);this.value=''">
+      </div>
+    </div>
+    <div class="grid2" style="grid-template-columns:repeat(4,1fr);gap:10px">
+      <div class="kv" style="border:none;flex-direction:column;align-items:flex-start"><span class="k">Depositado</span><b class="neg" id="rcDep" style="font-size:18px">—</b></div>
+      <div class="kv" style="border:none;flex-direction:column;align-items:flex-start"><span class="k">Levantado</span><b class="pos" id="rcWit" style="font-size:18px">—</b></div>
+      <div class="kv" style="border:none;flex-direction:column;align-items:flex-start"><span class="k">Minerado (registado)</span><b class="pos" id="rcMine" style="font-size:18px">—</b></div>
+      <div class="kv" style="border:none;flex-direction:column;align-items:flex-start"><span class="k">P/L do jogo</span><b id="rcPL" style="font-size:18px">—</b></div>
+    </div>
+    <div class="small muted" style="margin-top:10px">Formato CSV: <code>data, token, quantidade, tipo</code> · tipo = <code>deposit</code> / <code>withdraw</code> / <code>mine</code>. RLT/RST valorizados a ~1 USD (tokens internos).</div>
+  </div>
+  <div class="grid2">
+    <div>
+      <div class="card">
+        <h2>⛏️ Mineradoras — ROI</h2>
+        <div class="form-row">
+          <div style="grid-column:span 2"><label>Nome da mineradora</label><input id="mName" placeholder="ex.: Nineradora X"></div>
+          <div><label>Custo (quantidade)</label><input id="mQty" type="number" step="any" placeholder="0.5"></div>
+          <div><label>Token do custo</label><input id="mTok" placeholder="BTC" list="rcTokList"></div>
+          <div><label>Data compra</label><input id="mDate" type="date"></div>
+          <button class="btn gold sm" onclick="addMiner()" style="align-self:end">Registar</button>
+        </div>
+        <div id="minerList"><div class="empty">Sem mineradoras registadas.</div></div>
+      </div>
+      <div class="card">
+        <h2>⛏️ Registar mineração</h2>
+        <div class="form-row">
+          <div><label>Data</label><input id="mineDate" type="date"></div>
+          <div><label>Token</label><input id="mineTok" placeholder="BTC" list="rcTokList"></div>
+          <div><label>Quantidade</label><input id="mineQty" type="number" step="any"></div>
+          <button class="btn sm" onclick="addMine()" style="align-self:end">Adicionar</button>
+        </div>
+        <div class="small muted" style="margin-bottom:8px">O que minerares conta para pagar as mineradoras (por ordem de compra). No CSV, marca ganhos de mineração como <code>mine</code>.</div>
+        <datalist id="rcTokList"></datalist>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <h2>Por token</h2>
+        <div id="rcTokenTable"><div class="empty">Importa o CSV ou regista mineração.</div></div>
+      </div>
+      <div class="card">
+        <h2>Histórico RollerCoin</h2>
+        <div id="rcFeed"><div class="empty">Sem movimentos.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+<div id="toast"></div>
+
+<script>
+/* ====== ESTADO ====== */
+const K='pt_v8';
+let S={txs:[],divEvents:[],cash:[],lends:[],wallets:[],wData:{},names:{},prices:{},fx:{},theme:'panda',rcMoves:[],miners:[]};
+function load(){try{const r=localStorage.getItem(K);if(r)S=Object.assign(S,JSON.parse(r));}catch(e){}}
+function save(){try{localStorage.setItem(K,JSON.stringify(S));}catch(e){}}
+const fmt=v=>new Intl.NumberFormat('pt-PT',{style:'currency',currency:'EUR'}).format(v||0);
+const fmtN=v=>new Intl.NumberFormat('pt-PT',{maximumFractionDigits:8}).format(v||0);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.className='show';clearTimeout(t._h);t._h=setTimeout(()=>t.className='',3200);}
+
+/* ====== TEMAS ====== */
+const THEMES={panda:['#0f1117','#161923','#1a1e2b','#2a3042','#e6e9f0','#8b93a7','#4f8cff'],midnight:['#050505','#0d0d0d','#141414','#262626','#eeeeee','#888888','#a855f7'],forest:['#0a0f0a','#101810','#162116','#243524','#e0efe0','#7d9c7d','#22c55e'],ember:['#120a0a','#1c1010','#261818','#3a2626','#f0e4e4','#a08080','#ef4444'],ocean:['#0a0f14','#101820','#16202a','#243444','#e0ecf4','#7d94a8','#06b6d4'],dracula:['#282a36','#21222c','#343746','#44475a','#f8f8f2','#9aa0c0','#bd93f9'],tokyo:['#1a1b26','#16161e','#24283b','#414868','#c0caf5','#7982a9','#7aa2f7'],nord:['#2e3440','#272c36','#3b4252','#4c566a','#eceff4','#98a4b8','#88c0d0'],light:['#f4f6fa','#e9edf4','#ffffff','#d8dfea','#16202e','#64748b','#3b82f6'],sand:['#faf6ee','#f0e9da','#fffdf7','#e2d8c2','#3d3226','#8a7a60','#d97706'],mint:['#f2faf5','#e4f4ea','#ffffff','#cde8d8','#173d2c','#5f8a72','#10b981'],synthwave:['#241530','#1a0f24','#2f1c40','#4d2a68','#ffd7f5','#b48ac8','#ff7edb'],terminal:['#000000','#0a0f0a','#0d140d','#1d3a1d','#33ff33','#1f9924','#33ff33'],gruvbox:['#282828','#1d2021','#32302f','#504945','#ebdbb2','#a89984','#fe8019']};
+function setTheme(id){S.theme=id;const t=THEMES[id]||THEMES.panda;document.getElementById('tv').textContent=':root{--bg:'+t[0]+';--bg2:'+t[1]+';--card:'+t[2]+';--card2:'+t[1]+';--border:'+t[3]+';--text:'+t[4]+';--muted:'+t[5]+';--accent:'+t[6]+';--green:#22c55e;--red:#ef4444;--gold:#f59e0b}';save();render();}
+function showTab(id){['dash','feed','net','rc'].forEach(t=>{document.getElementById('tab-'+t).className='tab'+(t===id?' on':'');document.getElementById('nb-'+t).className=t===id?'on':'';});}
+
+/* ====== FX ====== */
+async function refreshFx(){
+  try{
+    const d=await fetch('https://api.frankfurter.app/latest?from=USD&to=EUR,GBP,CHF,DKK,SEK,NOK,PLN,CZK,JPY,HKD,CNY,CAD,AUD').then(r=>r.json());
+    if(d&&d.rates&&d.rates.EUR){
+      const o={};for(const[k,v]of Object.entries(d.rates))o[k]=d.rates.EUR/v;
+      o.USD=d.rates.EUR;o.EUR=1;S.fx=o;save();
+      document.getElementById('dFx').textContent='Câmbio BCE: 1 USD = '+d.rates.EUR.toFixed(4)+' EUR';
+    }
+  }catch(e){}
+  if(!S.fx||!S.fx.USD)S.fx={USD:0.88,EUR:1,GBP:1.14,CHF:1.05};
+}
+function toEUR(v,cur){cur=(cur||'EUR').toUpperCase();if(cur==='EUR')return v;if(cur==='GBX')return v/100*(S.fx.GBP||1.14);const r=S.fx[cur];if(r)return v*r;return v*(S.fx.USD||0.88);}
+
+/* ====== PREÇOS ====== */
+const CG={BTC:'bitcoin',ETH:'ethereum',SOL:'solana',BNB:'binancecoin',XRP:'ripple',DOGE:'dogecoin',ADA:'cardano',LINK:'chainlink',AVAX:'avalanche-2',LTC:'litecoin',UNI:'uniswap',DOT:'polkadot',USDC:'usd-coin',MATIC:'matic-network',TRX:'tron',USDT:'tether'};
+const PROXIES=[u=>'https://api.allorigins.win/raw?url='+encodeURIComponent(u),u=>'https://corsproxy.io/?url='+encodeURIComponent(u)];
+async function pf(url){
+  try{const r=await fetch(url);if(r.ok)return await r.json();}catch(e){}
+  for(const p of PROXIES){try{const r=await fetch(p(url));if(r.ok){const d=await r.json();if(d&&d.contents)return JSON.parse(d.contents);return d;}}catch(e){}}
+  return null;
+}
+async function fetchYahoo(ticker){
+  const d=await pf('https://query1.finance.yahoo.com/v8/finance/chart/'+encodeURIComponent(ticker)+'?interval=1d&range=1d');
+  const m=d&&d.chart&&d.chart.result&&d.chart.result[0]&&d.chart.result[0].meta;
+  if(m&&m.regularMarketPrice!=null){
+    let cur=(m.currency||'USD').toUpperCase(),price=m.regularMarketPrice;
+    if(cur==='GBX'){price/=100;cur='GBP';}
+    return{eur:toEUR(price,cur),cur};
+  }
+  return null;
+}
+async function fetchPrice(ticker){
+  const tk=ticker.toUpperCase();
+  const c=S.prices[tk];
+  if(c&&Date.now()-c.ts<600000)return c;
+  let out=null;
+  if(CG[tk]){
+    const d=await pf('https://api.coingecko.com/api/v3/simple/price?ids='+CG[tk]+'&vs_currencies=eur');
+    const eur=d&&d[CG[tk]]&&d[CG[tk]].eur;
+    if(eur!=null)out={eur,cur:'EUR'};
+  }else{
+    out=await fetchYahoo(ticker);
+    if(!out)out=await fetchYahoo(ticker+'.DE');
+  }
+  if(out&&out.eur!=null){out.ts=Date.now();S.prices[tk]=out;save();}
+  return out;
+}
+/* tokens RollerCoin internos ~1 USD (estimativa) */
+const RC_INTERNAL={RLT:1,RST:1,USDT:1,USDC:1};
+function tokEur(token){
+  const tk=(token||'').toUpperCase();
+  if(RC_INTERNAL[tk]!=null)return{eur:(S.fx&&S.fx.USD?S.fx.USD:0.88),est:true};
+  const p=S.prices[tk];
+  if(p&&p.eur!=null)return{eur:p.eur,est:false};
+  return{eur:0,est:false};
+}
+async function refreshRcPrices(){
+  const toks=new Set();
+  S.rcMoves.forEach(m=>toks.add(m.token.toUpperCase()));
+  S.miners.forEach(m=>toks.add(m.costTok.toUpperCase()));
+  for(const tk of toks){if(CG[tk])await fetchPrice(tk);}
+}
+
+/* ====== POSIÇÕES ====== */
+function calcAll(){
+  const pos={};let realized=0,fees=0;
+  for(const t of S.txs){
+    fees+=t.fee||0;
+    const k=t.ticker.toUpperCase();
+    if(!pos[k])pos[k]={ticker:k,qty:0,cost:0,name:S.names[k]||k,type:t.type||'stock',source:t.source||'manual'};
+    const p=pos[k];
+    if(t.side==='buy'){p.qty+=t.quantity;p.cost+=t.quantity*t.price;}
+    else if(t.side==='sell'&&p.qty>0){
+      const avg=p.cost/p.qty,sq=Math.min(t.quantity,p.qty);
+      realized+=sq*(t.price-avg);
+      p.qty-=sq;p.cost=Math.max(0,p.qty*avg);
+    }
+  }
+  return{positions:Object.values(pos).filter(p=>p.qty>1e-8),realized,fees};
+}
+function posEur(p){const pr=S.prices[p.ticker.toUpperCase()];return pr&&pr.eur!=null?pr.eur:(p.qty>0?p.cost/p.qty:0);}
+function logoHtml(tk){
+  const clean=tk.replace(/[^A-Z0-9]/gi,'');
+  return '<div class="pf-logo"><img src="https://financialmodelingprep.com/image-stock/'+esc(clean)+'.png" onerror="this.remove();this.parentNode.textContent=\''+esc(tk.slice(0,2))+'\'" alt=""></div>';
+}
+
+/* ====== CSV TRADING 212 ====== */
+function csvLine(line){const out=[];let cur='',q=false;for(let i=0;i<line.length;i++){const ch=line[i];if(ch==='"'){if(q&&line[i+1]==='"'){cur+='"';i++;}else q=!q;}else if(ch===','&&!q){out.push(cur);cur='';}else cur+=ch;}out.push(cur);return out.map(s=>s.trim());}
+function handleCsv(file){
+  if(!file)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    try{
+      const rows=String(e.target.result).split(/\r?\n/).filter(l=>l.trim());
+      if(rows.length<2)return toast('CSV vazio');
+      const h=csvLine(rows[0]);
+      if(!h.some(x=>x==='Action'))return toast('Não parece um CSV da Trading 212 (falta coluna Action)');
+      const idx=n=>h.findIndex(x=>x.toLowerCase().startsWith(n.toLowerCase()));
+      const iA=idx('Action'),iT=idx('Ticker'),iN=idx('Name'),iQ=idx('No. of shares'),iD=idx('Time'),
+            iTot=idx('Total'),iCur=idx('Currency (Total'),iFee=idx('Charge amount'),iStamp=idx('Stamp duty'),iFx=idx('Currency conversion fee');
+      let nTx=0,nDiv=0,nCash=0;
+      for(let n=1;n<rows.length;n++){
+        const c=csvLine(rows[n]);
+        const g=i=>i>=0&&i<c.length?c[i]:'';
+        const act=g(iA).toLowerCase();
+        const tk=g(iT).trim().toUpperCase();
+        const date=(g(iD).split(' ')[0])||new Date().toISOString().slice(0,10);
+        const num=s=>{const v=parseFloat(String(s).replace(/\s/g,'').replace(',','.'));return isNaN(v)?0:v;};
+        const fee=Math.abs(num(g(iFee)))+Math.abs(num(g(iStamp)))+Math.abs(num(g(iFx)));
+        if(act.includes('buy')||act.includes('sell')){
+          if(!tk)continue;
+          const qty=num(g(iQ));if(qty<=0)continue;
+          let tot=toEUR(Math.abs(num(g(iTot))),g(iCur)||'EUR');
+          if(tot<=0)continue;
+          if(g(iN))S.names[tk]=g(iN);
+          S.txs.push({date,ticker:tk,side:act.includes('buy')?'buy':'sell',quantity:qty,price:tot/qty,fee,type:'stock',source:'T212'});
+          nTx++;
+        }else if(act.includes('dividend')&&tk){
+          let tot=toEUR(Math.abs(num(g(iTot))),g(iCur)||'EUR');
+          if(tot>0){S.divEvents.push({date,ticker:tk,amount:tot});nDiv++;}
+        }else if(act.includes('interest on cash')||act.includes('deposit')||act.includes('withdrawal')){
+          let tot=toEUR(Math.abs(num(g(iTot))),g(iCur)||'EUR');
+          const sign=act.includes('withdrawal')?-1:1;
+          S.cash.push({date,label:act.includes('deposit')?'Depósito':act.includes('withdrawal')?'Levantamento':'Juros de cash',amount:sign*tot});
+          nCash++;
+        }
+      }
+      if(!nTx&&!nDiv&&!nCash)return toast('Nenhuma linha reconhecida no CSV');
+      save();render();refreshPrices();
+      toast(nTx+' transações · '+nDiv+' dividendos · '+nCash+' movimentos de caixa importados');
+    }catch(err){toast('Erro no CSV: '+err.message);}
+  };
+  r.readAsText(file);
+}
+
+/* ====== ROLLERCOIN — CSV ====== */
+function handleRcCsv(file){
+  if(!file)return;
+  const r=new FileReader();
+  r.onload=async e=>{
+    try{
+      const rows=String(e.target.result).split(/\r?\n/).filter(l=>l.trim());
+      if(rows.length<2)return toast('CSV vazio');
+      const h=csvLine(rows[0]).map(x=>x.toLowerCase());
+      const fi=(...names)=>{for(const n of names){const i=h.findIndex(x=>x.startsWith(n));if(i>=0)return i;}return -1;};
+      const iD=fi('data','date','dia'),iT=fi('token','moeda','coin'),iQ=fi('quantidade','qty','amount','valor'),iK=fi('tipo','kind','type','acao');
+      if(iT<0||iQ<0)return toast('Colunas obrigatórias: data, token, quantidade [, tipo]');
+      let n=0;
+      for(let r=1;r<rows.length;r++){
+        const c=csvLine(rows[r]);
+        const date=(iD>=0?c[iD]:'')||new Date().toISOString().slice(0,10);
+        const token=(c[iT]||'').trim().toUpperCase();
+        const qty=parseFloat(String(c[iQ]||'').replace(',','.'));
+        if(!token||isNaN(qty)||qty<=0)continue;
+        let kind=(iK>=0?(c[iK]||''):'deposit').toLowerCase();
+        if(kind.startsWith('w')||kind.includes('levant'))kind='withdraw';
+        else if(kind.startsWith('m')||kind.includes('minera'))kind='mine';
+        else kind='deposit';
+        S.rcMoves.push({date:date.slice(0,10),token,qty,kind});
+        n++;
+      }
+      if(!n)return toast('Nenhuma linha válida');
+      save();await refreshRcPrices();render();
+      toast(n+' movimentos RollerCoin importados');
+    }catch(err){toast('Erro no CSV: '+err.message);}
+  };
+  r.readAsText(file);
+}
+function addMine(){
+  const date=document.getElementById('mineDate').value||new Date().toISOString().slice(0,10);
+  const token=document.getElementById('mineTok').value.trim().toUpperCase();
+  const qty=parseFloat(document.getElementById('mineQty').value);
+  if(!token||isNaN(qty)||qty<=0)return toast('Preenche token e quantidade');
+  S.rcMoves.push({date,token,qty,kind:'mine'});
+  save();refreshRcPrices().then(()=>render());
+  document.getElementById('mineQty').value='';
+  toast('Mineração registada');
+}
+function removeRcMove(i){S.rcMoves.splice(i,1);save();render();}
+function addMiner(){
+  const name=document.getElementById('mName').value.trim()||'Mineradora';
+  const costQty=parseFloat(document.getElementById('mQty').value);
+  const costTok=(document.getElementById('mTok').value.trim()||'BTC').toUpperCase();
+  const date=document.getElementById('mDate').value||new Date().toISOString().slice(0,10);
+  if(isNaN(costQty)||costQty<=0)return toast('Indica o custo da mineradora');
+  S.miners.push({name,date,costQty,costTok});
+  save();refreshRcPrices().then(()=>render());
+  ['mName','mQty','mTok','mDate'].forEach(id=>document.getElementById(id).value='');
+  toast('Mineradora registada');
+}
+function removeMiner(i){if(!confirm('Remover esta mineradora?'))return;S.miners.splice(i,1);save();render();}
+function rcStats(){
+  let dep=0,wit=0,mine=0;
+  const byTok={};
+  for(const m of S.rcMoves){
+    const v=m.qty*tokEur(m.token).eur;
+    if(!byTok[m.token])byTok[m.token]={dep:0,wit:0,mine:0,est:tokEur(m.token).est};
+    if(m.kind==='deposit'){dep+=v;byTok[m.token].dep+=m.qty;}
+    else if(m.kind==='withdraw'){wit+=v;byTok[m.token].wit+=m.qty;}
+    else{mine+=v;byTok[m.token].mine+=m.qty;}
+  }
+  return{dep,wit,mine,byTok,pl:wit+mine-dep};
+}
+
+/* ====== 8LENDS ====== */
+function addLend(){
+  const amount=parseFloat(document.getElementById('lAmt').value);
+  const apr=parseFloat(document.getElementById('lApr').value);
+  const term=parseInt(document.getElementById('lTerm').value)||12;
+  const date=document.getElementById('lDate').value||new Date().toISOString().slice(0,10);
+  if(isNaN(amount)||amount<=0||isNaN(apr)||apr<=0)return toast('Preenche capital e APR');
+  S.lends.push({amount,apr,term,date});save();render();
+  ['lAmt','lApr','lTerm','lDate'].forEach(id=>document.getElementById(id).value='');
+  toast('Empréstimo 8lends registado');
+}
+function removeLend(i){if(!confirm('Remover este empréstimo?'))return;S.lends.splice(i,1);save();render();}
+function lendEnd(l){const d=new Date(l.date+'T00:00:00');d.setMonth(d.getMonth()+(l.term||12));return d;}
+function nextInt(l){const now=new Date(),d=new Date(l.date+'T00:00:00');d.setMonth(d.getMonth()+1);const end=lendEnd(l);while(d<now&&d<end)d.setMonth(d.getMonth()+1);return d>end?end:d;}
+
+/* ====== CARTEIRAS ====== */
+async function addWallet(){
+  const chain=document.getElementById('wChain').value,addr=document.getElementById('wAddr').value.trim(),key=document.getElementById('wKey').value.trim();
+  if(!addr)return toast('Indica o endereço');
+  S.wallets=S.wallets.filter(w=>!(w.chain===chain&&w.addr===addr));
+  S.wallets.push({chain,addr,key});save();renderWallets();
+  toast('A consultar '+chain.toUpperCase()+'…');
+  try{
+    let data;
+    if(chain==='btc')data=await btcW(addr);
+    else if(chain==='sol')data=await solW(addr);
+    else data=await evmW(chain,addr,key);
+    S.wData[chain+'|'+addr]=data;save();renderWallets();renderNet();
+    toast(data.error||(data.assets.length+' ativos encontrados'));
+  }catch(e){toast('Erro: '+e.message);}
+}
+function removeWallet(c,a){S.wallets=S.wallets.filter(w=>!(w.chain===c&&w.addr===a));delete S.wData[c+'|'+a];save();renderWallets();renderNet();}
+async function btcW(addr){
+  const d=await pf('https://blockstream.info/api/address/'+encodeURIComponent(addr));
+  if(!d||!d.chain_stats)return{assets:[],error:'Sem resposta do Blockstream'};
+  const sats=(d.chain_stats.funded_txo_sum||0)-(d.chain_stats.spent_txo_sum||0);
+  const pr=await fetchPrice('BTC');
+  return{assets:[{symbol:'BTC',qty:sats/1e8,eur:pr?pr.eur:null}]};
+}
+async function solW(addr){
+  const rpc='https://api.mainnet-beta.solana.com';
+  const post=(m,p)=>fetch(rpc,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:m,params:p})}).then(r=>r.json());
+  const bal=await post('getBalance',[addr]);
+  const tks=await post('getTokenAccountsByOwner',[addr,{programId:'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'},{encoding:'jsonParsed'}]);
+  const assets=[];
+  const lam=bal&&bal.result&&bal.result.value||0;
+  if(lam>0){const pr=await fetchPrice('SOL');assets.push({symbol:'SOL',qty:lam/1e9,eur:pr?pr.eur:null});}
+  const MINTS={'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':'USDC','Es9vMFrzaCERmJfrF4H2FYD4KjNkUJ7wPpE6Q7kP6k5':'USDT'};
+  const arr=(tks&&tks.result&&tks.result.value)||[];
+  const unknown=[];
+  for(const a of arr){
+    const info=a.account&&a.account.data&&a.account.data.parsed&&a.account.data.parsed.info;
+    if(!info)continue;
+    const ui=parseFloat(info.tokenAmount&&info.tokenAmount.uiAmount)||0;
+    if(ui<0.001)continue;
+    if(MINTS[info.mint])assets.push({symbol:MINTS[info.mint],qty:ui,eur:toEUR(1,'USD')});
+    else unknown.push({mint:info.mint,qty:ui});
+  }
+  if(unknown.length){
+    const d=await pf('https://api.coingecko.com/api/v3/simple/token_price/solana?contract_addresses='+unknown.map(u=>u.mint).join(',')+'&vs_currencies=eur');
+    for(const u of unknown){
+      const eur=d&&d[u.mint.toLowerCase()]&&d[u.mint.toLowerCase()].eur;
+      if(eur!=null&&eur*u.qty>=0.5)assets.push({symbol:u.mint.slice(0,5)+'…',qty:u.qty,eur});
+    }
+  }
+  return{assets};
+}
+async function evmW(chain,addr,key){
+  const cfg={eth:{ch:1,sym:'ETH',cg:'ETH'},bsc:{ch:56,sym:'BNB',cg:'BNB'},base:{ch:8453,sym:'ETH',cg:'ETH'}}[chain];
+  if(!key)return{assets:[],error:'Precisas de chave Etherscan (gratuita em etherscan.io → API Keys). Serve para ETH, BSC e Base.'};
+  const d=await pf('https://api.etherscan.io/v2/api?chainid='+cfg.ch+'&module=account&action=balance&address='+addr+'&tag=latest&apikey='+key);
+  if(d&&d.status==='0'&&String(d.result).toLowerCase().includes('invalid'))return{assets:[],error:'Chave API inválida'};
+  const wei=parseInt(d&&d.result||'0');
+  const pr=await fetchPrice(cfg.cg);
+  const assets=[{symbol:cfg.sym,qty:wei/1e18,eur:pr?pr.eur:null}];
+  if(chain==='base'){
+    const u=await pf('https://api.etherscan.io/v2/api?chainid=8453&module=account&action=tokenbalance&contractaddress=0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913&address='+addr+'&tag=latest&apikey='+key);
+    const ub=parseInt(u&&u.result||'0');
+    if(ub>0)assets.push({symbol:'USDC',qty:ub/1e6,eur:toEUR(1,'USD')});
+  }
+  return{assets};
+}
+
+/* ====== RENDER ====== */
+let allocChart=null,divChart=null,showAll=false;
+function toggleAllPos(){showAll=!showAll;document.getElementById('posMore').textContent=showAll?'Mostrar menos':'Mostrar mais';renderPositions();}
+function renderPositions(){
+  const{positions:pos}=calcAll();
+  const el=document.getElementById('posList');
+  if(!pos.length){el.innerHTML='<div class="empty">Sem posições. Importa o CSV da Trading 212.</div>';document.getElementById('posMore').style.display='none';return;}
+  pos.sort((a,b)=>b.qty*posEur(b)-a.qty*posEur(a));
+  const shown=showAll?pos:pos.slice(0,7);
+  document.getElementById('posMore').style.display=pos.length>7?'block':'none';
+  el.innerHTML=shown.map(p=>{
+    const eur=posEur(p),mkt=eur*p.qty,avg=p.qty>0?p.cost/p.qty:0;
+    const pl=mkt-p.cost,pct=p.cost>0?pl/p.cost*100:0;
+    const hasPrice=S.prices[p.ticker.toUpperCase()]&&S.prices[p.ticker.toUpperCase()].eur!=null;
+    return '<div class="pos-row">'+logoHtml(p.ticker)+
+      '<div><div class="pf-name">'+esc(p.name)+'</div><div class="pf-tick">'+esc(p.ticker)+' ×'+fmtN(p.qty)+(hasPrice?'':' <span class="tag gold">custo</span>')+'</div></div>'+
+      '<div class="pf-mid"><div class="pf-avg">méd. '+fmt(avg)+'</div><div class="pf-cur">'+fmt(eur)+'</div></div>'+
+      '<div class="pf-pl"><div class="pf-plv '+(pl>=0?'pos':'neg')+'">'+(pl>=0?'+':'')+fmt(pl)+'</div><div class="pf-plp '+(pl>=0?'pos':'neg')+'">'+(pl>=0?'↗':'↘')+' '+Math.abs(pct).toFixed(2)+'%</div></div></div>';
+  }).join('');
+}
+function renderCapital(){
+  const{positions:pos,realized,fees}=calcAll();
+  let cost=0,mkt=0;
+  pos.forEach(p=>{cost+=p.cost;mkt+=p.qty*posEur(p);});
+  const priceGain=mkt-cost;
+  const divTot=S.divEvents.reduce((s,d)=>s+d.amount,0);
+  const tot=priceGain+divTot+realized-fees;
+  const set=(id,v)=>{const el=document.getElementById(id);el.textContent=(v>=0?'+':'−')+fmt(Math.abs(v));el.className=v>=0?'pos':'neg';};
+  document.getElementById('capInv').textContent=fmt(cost);
+  set('capPrice',priceGain);set('capDiv',divTot);set('capReal',realized);
+  document.getElementById('capFees').textContent='−'+fmt(fees);
+  set('capTot',tot);
+}
+function renderNet(){
+  const{positions:pos}=calcAll();
+  let mkt=0,cost=0;
+  pos.forEach(p=>{cost+=p.cost;mkt+=p.qty*posEur(p);});
+  let wTot=0;
+  Object.values(S.wData).forEach(wd=>(wd.assets||[]).forEach(a=>{if(a.eur!=null)wTot+=a.qty*a.eur;}));
+  const lendEur=S.lends.reduce((s,l)=>s+l.amount*(S.fx.USD||0.88),0);
+  const cashFree=S.cash.reduce((s,c)=>s+c.amount,0)-cost;
+  const net=mkt+wTot+lendEur;
+  const pl=mkt-cost;
+  document.getElementById('dNet').textContent=fmt(net);
+  const sub=document.getElementById('dNetSub');
+  sub.textContent=(pl>=0?'↗ ':'↘ ')+(pl>=0?'+':'−')+fmt(Math.abs(pl))+' ('+(cost>0?(pl/cost*100).toFixed(2):'0.00')+'%) sobre investimentos';
+  sub.className='big-sub '+(pl>=0?'pos':'neg');
+  const acct=[{icon:'📈',name:'Trading212',pct:cost>0?pl/cost*100:0,val:mkt}];
+  if(wTot>0)acct.push({icon:'🔗',name:'Carteiras cripto',pct:null,val:wTot});
+  if(lendEur>0)acct.push({icon:'🤝',name:'8lends (P2P)',pct:null,val:lendEur});
+  const rc=rcStats();
+  if(S.rcMoves.length)acct.push({icon:'🎮',name:'RollerCoin (P/L)',pct:null,val:rc.pl});
+  document.getElementById('acctList').innerHTML=acct.map(a=>'<div class="acct"><div class="pf-logo">'+a.icon+'</div><div><div class="pf-name">'+a.name+'</div></div><div class="val">'+(a.pct!=null?'<div class="small '+(a.pct>=0?'pos':'neg')+'">'+(a.pct>=0?'↗':'↘')+' '+Math.abs(a.pct).toFixed(2)+'%</div>':'')+'<b>'+fmt(a.val)+'</b></div></div>').join('');
+  const dep=S.cash.filter(c=>c.label==='Depósito').reduce((s,c)=>s+c.amount,0);
+  const wit=S.cash.filter(c=>c.label==='Levantamento').reduce((s,c)=>s+c.amount,0);
+  const intr=S.cash.filter(c=>c.label==='Juros de cash').reduce((s,c)=>s+c.amount,0);
+  document.getElementById('cashDep').textContent='+'+fmt(dep);
+  document.getElementById('cashWit').textContent=fmt(wit);
+  document.getElementById('cashInt').textContent='+'+fmt(intr);
+  document.getElementById('cashFree').textContent=fmt(Math.max(0,cashFree));
+}
+function renderFeed(){
+  const rows=[
+    ...S.txs.map(t=>({d:t.date,ic:t.side==='buy'?'🛒':'💸',name:S.names[t.ticker]||t.ticker,sub:(t.side==='buy'?'Comprado':'Vendido')+' ×'+fmtN(t.quantity)+' em '+fmt(t.price*t.quantity),val:(t.side==='buy'?'−':'+')+fmt(t.price*t.quantity),cls:t.side==='buy'?'':'pos'})),
+    ...S.divEvents.map(d=>({d:d.date,ic:'💰',name:S.names[d.ticker]||d.ticker,sub:'Dividendo recebido',val:'+'+fmt(d.amount),cls:'pos'})),
+    ...S.cash.map(c=>({d:c.date,ic:'🏦',name:c.label,sub:'',val:(c.amount>=0?'+':'−')+fmt(Math.abs(c.amount)),cls:c.amount>=0?'pos':'neg'}))
+  ].sort((a,b)=>a.d<b.d?1:-1);
+  const el=document.getElementById('feedList');
+  if(!rows.length){el.innerHTML='<div class="empty">Sem transações.</div>';return;}
+  let lastDay='';
+  el.innerHTML=rows.slice(0,60).map(r=>{
+    const day=r.d.slice(5).split('-').reverse().join('.');
+    const hdr=day!==lastDay?'<div class="small muted" style="padding:10px 0 4px">'+r.d+'</div>':'';
+    lastDay=day;
+    return hdr+'<div class="feed-row"><div class="feed-date">'+day+'</div><div>'+r.ic+'</div><div><div class="pf-name">'+esc(r.name)+'</div><div class="small muted">'+esc(r.sub)+'</div></div><div class="feed-val '+r.cls+'">'+r.val+'</div></div>';
+  }).join('');
+}
+function renderLends(){
+  const el=document.getElementById('lendList');
+  if(!S.lends.length){el.innerHTML='<div class="empty">Sem empréstimos.</div>';document.getElementById('lendMon').textContent=fmt(0);return;}
+  let mon=0;
+  el.innerHTML=S.lends.map((l,i)=>{
+    const jm=l.amount*(l.apr/100)/12;
+    mon+=jm*(S.fx.USD||0.88);
+    return '<div class="feed-row"><div>🤝</div><div><div class="pf-name">'+fmtN(l.amount)+' USDC · '+l.apr+'% APR</div><div class="small muted">próx. juro '+nextInt(l).toISOString().slice(0,10)+' · vence '+lendEnd(l).toISOString().slice(0,10)+'</div></div><div class="feed-val pos">'+fmtN(jm.toFixed(2))+' USDC/mês</div><button class="btn danger sm" onclick="removeLend('+i+')">✕</button></div>';
+  }).join('');
+  document.getElementById('lendMon').textContent=fmt(mon);
+}
+function renderDivs(){
+  const tot=S.divEvents.reduce((s,d)=>s+d.amount,0);
+  document.getElementById('divTotal').textContent=fmt(tot);
+  const{positions:pos}=calcAll();
+  const cost=pos.reduce((s,p)=>s+p.cost,0);
+  const byYear={};
+  S.divEvents.forEach(d=>{const y=d.date.slice(0,4);byYear[y]=(byYear[y]||0)+d.amount;});
+  document.getElementById('divYoc').textContent=cost>0?(tot/cost*100).toFixed(2)+'%':'—';
+  const years=Object.keys(byYear).sort();
+  const t=THEMES[S.theme]||THEMES.panda;
+  if(divChart){divChart.destroy();divChart=null;}
+  if(years.length&&window.Chart){
+    divChart=new Chart(document.getElementById('divChart').getContext('2d'),{type:'bar',data:{labels:years,datasets:[{data:years.map(y=>byYear[y]),backgroundColor:t[6],borderRadius:6}]},options:{plugins:{legend:{display:false}},scales:{x:{ticks:{color:t[5]},grid:{display:false}},y:{ticks:{color:t[5]},grid:{color:t[3]}}}}});
+  }
+}
+function renderChart(){
+  const{positions:pos}=calcAll();
+  const groups={};
+  pos.forEach(p=>{const m=p.qty*posEur(p);const g=p.type==='crypto'?'Cripto':(/^(VWCE|VUAG|SPY|IWDA|EUNL|CSPX|VUSA)/.test(p.ticker)?'ETFs':'Ações');groups[g]=(groups[g]||0)+m;});
+  let wTot=0;Object.values(S.wData).forEach(wd=>(wd.assets||[]).forEach(a=>{if(a.eur!=null)wTot+=a.qty*a.eur;}));
+  if(wTot>0)groups['Cripto']=(groups['Cripto']||0)+wTot;
+  const lendEur=S.lends.reduce((s,l)=>s+l.amount*(S.fx.USD||0.88),0);
+  if(lendEur>0)groups['8lends']=lendEur;
+  const labels=Object.keys(groups),vals=Object.values(groups);
+  const colors=['#4f8cff','#22c55e','#f59e0b','#ef4444','#a855f7','#06b6d4'];
+  const elL=document.getElementById('allocLegend');
+  if(allocChart){allocChart.destroy();allocChart=null;}
+  if(!vals.length||!window.Chart){elL.innerHTML='';return;}
+  allocChart=new Chart(document.getElementById('allocChart').getContext('2d'),{type:'doughnut',data:{labels,datasets:[{data:vals,backgroundColor:colors,borderWidth:0}]},options:{cutout:'68%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.label+': '+fmt(c.parsed)}}}}});
+  const tot=vals.reduce((a,b)=>a+b,0);
+  elL.innerHTML=labels.map((l,i)=>'<span style="margin-right:10px;white-space:nowrap"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:'+colors[i%colors.length]+';margin-right:4px"></span>'+esc(l)+' '+((vals[i]/tot*100).toFixed(1))+'%</span>').join('');
+}
+function renderWallets(){
+  const el=document.getElementById('walletList');
+  if(!S.wallets.length){el.innerHTML='<div class="empty">Sem carteiras vinculadas.</div>';return;}
+  el.innerHTML=S.wallets.map(w=>{
+    const d=S.wData[w.chain+'|'+w.addr];
+    let body='<div class="small muted">A consultar…</div>';
+    if(d){
+      if(d.error)body='<div class="small" style="color:var(--red)">'+esc(d.error)+'</div>';
+      else if(!d.assets.length)body='<div class="small muted">Sem saldo</div>';
+      else body=d.assets.map(a=>'<div style="display:flex;justify-content:space-between;padding:3px 0"><span><b>'+esc(a.symbol)+'</b></span><span>'+fmtN(a.qty)+(a.eur!=null?' <span class="muted">≈'+fmt(a.qty*a.eur)+'</span>':'')+'</span></div>').join('');
+    }
+    return '<div class="wallet-card"><div style="display:flex;justify-content:space-between;margin-bottom:5px"><span class="chain '+w.chain+'">'+w.chain.toUpperCase()+'</span><button class="btn danger sm" onclick="removeWallet(\''+w.chain+'\',\''+esc(w.addr)+'\')">✕</button></div><div class="addr muted">'+esc(w.addr.slice(0,20))+'…</div><div style="margin-top:5px">'+body+'</div></div>';
+  }).join('');
+}
+
+/* ====== ROLLERCOIN — RENDER ====== */
+function renderRc(){
+  const st=rcStats();
+  document.getElementById('rcDep').textContent=fmt(st.dep);
+  document.getElementById('rcWit').textContent=fmt(st.wit);
+  document.getElementById('rcMine').textContent=fmt(st.mine);
+  const plEl=document.getElementById('rcPL');
+  plEl.textContent=(st.pl>=0?'+':'−')+fmt(Math.abs(st.pl));
+  plEl.className=st.pl>=0?'pos':'neg';
+  plEl.style.fontSize='18px';
+
+  const toks=Object.entries(st.byTok);
+  const elT=document.getElementById('rcTokenTable');
+  if(!toks.length)elT.innerHTML='<div class="empty">Importa o CSV ou regista mineração.</div>';
+  else elT.innerHTML='<table><thead><tr><th>Token</th><th class="right">Depositado</th><th class="right">Levantado</th><th class="right">Minerado</th></tr></thead><tbody>'+
+    toks.map(([t,v])=>'<tr><td><b>'+esc(t)+'</b>'+(v.est?' <span class="tag gold">~$1</span>':'')+'</td><td class="right">'+fmtN(v.dep)+'</td><td class="right">'+fmtN(v.wit)+'</td><td class="right">'+fmtN(v.mine)+'</td></tr>').join('')+'</tbody></table>';
+
+  const sortedMiners=[...S.miners].sort((a,b)=>a.date<b.date?-1:1);
+  const elM=document.getElementById('minerList');
+  if(!sortedMiners.length)elM.innerHTML='<div class="empty">Sem mineradoras registadas.</div>';
+  else elM.innerHTML=sortedMiners.map(mn=>{
+    const realIdx=S.miners.indexOf(mn);
+    const costEur=mn.costQty*tokEur(mn.costTok).eur;
+    let paidEur=0;
+    for(const mv of S.rcMoves){
+      if(mv.kind!=='mine'||mv.date<mn.date)continue;
+      paidEur+=mv.qty*tokEur(mv.token).eur;
+      if(paidEur>=costEur){paidEur=costEur;break;}
+    }
+    const pct=costEur>0?Math.min(100,paidEur/costEur*100):0;
+    const faltam=Math.max(0,costEur-paidEur);
+    let eta='—';
+    const minedAfter=S.rcMoves.filter(m=>m.kind==='mine'&&m.date>=mn.date);
+    if(minedAfter.length&&faltam>0){
+      const first=new Date(mn.date),now=new Date();
+      const days=Math.max(1,(now-first)/864e5);
+      const earnedPerDay=paidEur/days;
+      if(earnedPerDay>0){
+        const etaDate=new Date(now.getTime()+faltam/earnedPerDay*864e5);
+        eta=etaDate.toISOString().slice(0,10);
+      }
+    }
+    return '<div class="wallet-card"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><b>⛏️ '+esc(mn.name)+'</b><button class="btn danger sm" onclick="removeMiner('+realIdx+')">✕</button></div>'+
+      '<div class="small muted">'+mn.date+' · custo '+fmtN(mn.costQty)+' '+esc(mn.costTok)+' ≈ '+fmt(costEur)+'</div>'+
+      '<div class="progress" style="margin:8px 0"><div style="width:'+pct.toFixed(1)+'%"></div></div>'+
+      '<div class="small"><span class="pos">'+fmt(paidEur)+' pagos ('+pct.toFixed(1)+'%)</span> · <span class="'+(faltam>0?'neg':'pos')+'">faltam '+fmt(faltam)+'</span>'+(faltam>0?' · <span class="muted">est. paga em '+eta+'</span>':' · <b class="pos">PAGA ✓</b>')+'</div></div>';
+  }).join('');
+
+  const elF=document.getElementById('rcFeed');
+  const moves=[...S.rcMoves].sort((a,b)=>a.date<b.date?1:-1).slice(0,40);
+  if(!moves.length)elF.innerHTML='<div class="empty">Sem movimentos.</div>';
+  else elF.innerHTML=moves.map(m=>{
+    const realIdx=S.rcMoves.indexOf(m);
+    const v=m.qty*tokEur(m.token).eur;
+    const ic=m.kind==='deposit'?'📥':m.kind==='withdraw'?'📤':'⛏️';
+    const lb=m.kind==='deposit'?'Depósito':m.kind==='withdraw'?'Levantamento':'Minerado';
+    const cls=m.kind==='deposit'?'neg':'pos';
+    return '<div class="feed-row"><div class="feed-date">'+m.date.slice(5).split('-').reverse().join('.')+'</div><div>'+ic+'</div><div><div class="pf-name">'+lb+'</div><div class="small muted">'+fmtN(m.qty)+' '+esc(m.token)+'</div></div><div class="feed-val '+cls+'">'+fmt(v)+'</div><button class="btn danger sm" onclick="removeRcMove('+realIdx+')">✕</button></div>';
+  }).join('');
+
+  const set=new Set([...Object.keys(CG),...Object.keys(RC_INTERNAL),...S.rcMoves.map(m=>m.token)]);
+  document.getElementById('rcTokList').innerHTML=[...set].map(t=>'<option value="'+esc(t)+'"></option>').join('');
+}
+
+function render(){renderPositions();renderCapital();renderNet();renderFeed();renderLends();renderDivs();renderChart();renderWallets();renderRc();}
+
+/* ====== PREÇOS ====== */
+async function refreshPrices(){
+  const{positions:pos}=calcAll();
+  const st=document.getElementById('pStatus');
+  st.textContent='a atualizar…';st.className='status warn';
+  await refreshFx();
+  let ok=0;
+  for(const p of pos){const r=await fetchPrice(p.ticker);if(r)ok++;}
+  await refreshRcPrices();
+  save();render();
+  st.textContent=pos.length?(ok===pos.length?'preços em tempo real':ok+'/'+pos.length+' com preço real'):'sem posições';
+  st.className=ok>0?'status ok':'status warn';
+  toast(pos.length?(ok+'/'+pos.length+' preços atualizados'):'FX e tokens RollerCoin atualizados');
+}
+
+/* ====== BACKUP ====== */
+function exportBackup(){
+  const blob=new Blob([JSON.stringify({...S,exportedAt:new Date().toISOString()},null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='backup_portfolio_'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(a.href);
+  toast('Backup completo exportado');
+}
+function importBackup(file){
+  if(!file)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    try{
+      const d=JSON.parse(e.target.result);
+      if(!Array.isArray(d.txs))return toast('Backup inválido');
+      S=Object.assign({txs:[],divEvents:[],cash:[],lends:[],wallets:[],wData:{},names:{},prices:{},fx:{},theme:'panda',rcMoves:[],miners:[]},d);
+      save();document.getElementById('themeSel').value=S.theme;setTheme(S.theme);
+      refreshFx().then(()=>{render();refreshPrices();});
+      toast('Backup restaurado');
+    }catch(err){toast('Erro ao ler backup');}
+  };
+  r.readAsText(file);
+}
+
+/* ====== INIT ====== */
+const dz=document.getElementById('dz');
+['dragover','dragenter'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('over');}));
+['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('over');}));
+dz.addEventListener('drop',e=>{e.preventDefault();const f=e.dataTransfer.files[0];if(f)handleCsv(f);});
+load();
+document.getElementById('themeSel').value=S.theme;
+setTheme(S.theme);
+refreshFx().then(()=>{render();refreshPrices();});
+</script>
+</body>
+</html>
+
